@@ -1,0 +1,38 @@
+{
+    "name": "siaoynli/laravel-alicloud-mts",
+    "type": "library",
+    "description": "aliyun-php-sdk-mts 封装，支持lairave",
+    "keywords": [
+      "aliyun",
+      "AliCloud",
+      "sdk",
+      "mts"
+    ],
+    "homepage": "https://github.com/siaoynli/laravel-alicloud-mts",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "siaoynli",
+        "email": "siaoynli@126.com",
+        "homepage": "https://github.com/siaoynli"
+      }
+    ],
+    "require": {
+      "php": ">=5.4",
+      "siaoynli/aliyun-sdk-mts": "^1.0"
+    },
+    "require-dev": {
+      "phpunit/phpunit": ">=4.8 < 6.0"
+    },
+    "autoload": {
+      "psr-4": {
+        "Siaoynli\\AliCloud\\Mts\\": "src/"
+      }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "AliCloud\\Mts\\": "tests/"
+      }
+    },
+	"minimum-stability": "dev"
+}
