@@ -1,7 +1,7 @@
 {
     "name": "siaoynli/laravel-alicloud-mts",
     "type": "library",
-    "description": "aliyun-php-sdk-mts 封装，支持lairave",
+    "description": "aliyun-php-sdk-mts 封装，laravel",
     "keywords": [
       "aliyun",
       "AliCloud",
