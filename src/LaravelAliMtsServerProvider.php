@@ -26,7 +26,9 @@ class LaravelAliMtsServerProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        $this->publishes([
+            __DIR__ . '/../config/alimts.php' => config_path('alimts.php'),
+        ]);
     }
 
     public function provides()

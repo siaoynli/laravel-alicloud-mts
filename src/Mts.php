@@ -30,7 +30,7 @@ class Mts
 
     public function __construct(Repository $config)
     {
-        $this->config = $config->get("alicloud");
+        $this->config = $config->get("alimts");
         $access_key_id = $this->config['access_key_id'];
         $access_key_secret = $this->config['access_key_secret'];
         $region_id = $this->config['region_id'] ?: "cn-hangzhou";
