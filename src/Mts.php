@@ -100,7 +100,7 @@ class Mts
         return $this;
     }
 
-    public function save()
+    public function done()
     {
         try {
             $response = $this->client->getAcsResponse($this->request);

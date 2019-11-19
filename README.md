@@ -6,7 +6,7 @@
 
 ## install
 
-this package  for laravel 
+this package  for laravel
 
 ```
 composer require siaoynli/laravel-sdk-mts
@@ -27,7 +27,7 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
  use Mts;
  
  //不打水印
- $response=Mts::input("11.mp4","hzwwp")->output("a.mp4","69645e9dda5341d9a3ec5a5d82f817cb","hzwwp")->save();
+ $response=Mts::input("11.mp4","hzwwp")->output("a.mp4","69645e9dda5341d9a3ec5a5d82f817cb","hzwwp")->done();
  
  //打图片水印
  
@@ -40,7 +40,7 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
             'dy'=> 0
   );
  
-  $response=Mts::input("11.mp4","hzwwp")->setImgWater("flu.png",$image_watermark,"hzwwp")->output("a.mp4","69645e9dda5341d9a3ec5a5d82f817cb","hzwwp")->save();
+  $response=Mts::input("11.mp4","hzwwp")->setImgWater("flu.png",$image_watermark,"hzwwp")->output("a.mp4","69645e9dda5341d9a3ec5a5d82f817cb","hzwwp")->done();
   
   //获取转码状态
   $job_id="00ee7714d880493e868656af5f645e72";
