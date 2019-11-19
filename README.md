@@ -6,7 +6,7 @@
 
 ## install
 
-this package  for >= laravel5.5
+this package  for laravel 
 
 ```
 composer require siaoynli/laravel-sdk-mts

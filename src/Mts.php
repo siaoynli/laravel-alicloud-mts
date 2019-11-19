@@ -30,10 +30,10 @@ class Mts
 
     public function __construct(Repository $config)
     {
-        $this->config = $config->get("alimts");
-        $access_key_id = $this->config['access_key_id'];
-        $access_key_secret = $this->config['access_key_secret'];
-        $region_id = $this->config['region_id'] ?: "cn-hangzhou";
+        $this->config = $config->get("alicloud-mts");
+        $access_key_id = $this->config['key'];
+        $access_key_secret = $this->config['secret'];
+        $region_id = $this->config['region'] ?: "cn-hangzhou";
         $profile = DefaultProfile::getProfile($region_id, $access_key_id, $access_key_secret);
         $this->client = new DefaultAcsClient($profile);
 
@@ -43,8 +43,8 @@ class Mts
     {
         $this->request = new SubmitJobsRequest();
         $this->request->setAcceptFormat('JSON');
-        $oss_location = $oss_location ?: $this->config['oss_location'];
-        $oss_bucket = $oss_bucket ?: $this->config['oss_bucket'];
+        $oss_location = $oss_location ?: $this->config['location'];
+        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
 
         $input = array('Location' => $oss_location,
             'Bucket' => $oss_bucket,
@@ -56,8 +56,8 @@ class Mts
 
     public function setImgWater($image_watermark_object, $watermark_config, $oss_bucket = null, $oss_location = null)
     {
-        $oss_location = $oss_location ?: $this->config['oss_location'];
-        $oss_bucket = $oss_bucket ?: $this->config['oss_bucket'];
+        $oss_location = $oss_location ?: $this->config['location'];
+        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
         $image_watermark_input = array(
             'Location' => $oss_location,
             'Bucket' => $oss_bucket,
@@ -86,8 +86,8 @@ class Mts
 
         $this->output['TemplateId'] = $template_id;
 
-        $oss_location = $oss_location ?: $this->config['oss_location'];
-        $oss_bucket = $oss_bucket ?: $this->config['oss_bucket'];
+        $oss_location = $oss_location ?: $this->config['location'];
+        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
 
         $outputs = array($this->output);
         $this->request->setOUtputs(json_encode($outputs));
@@ -95,7 +95,7 @@ class Mts
         $this->request->setOutputLocation($oss_location);
 
 
-        $this->request->setPipelineId($this->config['pipeline_id']);
+        $this->request->setPipelineId($this->config['pipeline']);
 
         return $this;
     }
@@ -146,8 +146,8 @@ class Mts
     {
         $this->request = new SubmitSnapshotJobRequest();
         $this->request->setAcceptFormat('JSON');
-        $oss_location = $oss_location ?: $this->config['oss_location'];
-        $oss_bucket = $oss_bucket ?: $this->config['oss_bucket'];
+        $oss_location = $oss_location ?: $this->config['location'];
+        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
 
         $input = array('Location' => $oss_location,
             'Bucket' => $oss_bucket,

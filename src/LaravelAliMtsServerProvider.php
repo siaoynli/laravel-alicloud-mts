@@ -27,7 +27,7 @@ class LaravelAliMtsServerProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/alimts.php' => config_path('alimts.php'),
+            __DIR__ . '/../config/alicloud-mts.php' => config_path('alicloud-mts.php'),
         ]);
     }
 
