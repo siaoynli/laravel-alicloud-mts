@@ -9,7 +9,7 @@
 this package  for laravel
 
 ```
-composer require siaoynli/laravel-sdk-mts
+composer require siaoynli/laravel-alicloud-mts
 ```
 add the   Siaoynli\AliCloud\Mts\LaravelAliMtsServerProvider::class   to the providers array in config/app.php
 
