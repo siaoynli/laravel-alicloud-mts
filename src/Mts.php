@@ -27,6 +27,8 @@ class Mts
     protected $client;
     protected $request;
     protected $output = array();
+    protected  $filename="";
+    protected  $snapshot_number=1;
 
     public function __construct(Repository $config)
     {
@@ -94,13 +96,12 @@ class Mts
         $this->request->setOutputBucket($oss_bucket);
         $this->request->setOutputLocation($oss_location);
 
-
         $this->request->setPipelineId($this->config['pipeline']);
 
         return $this;
     }
 
-    public function response()
+    public function getAcsResponse()
     {
         try {
             $response = $this->client->getAcsResponse($this->request);
@@ -113,6 +114,68 @@ class Mts
             return ["state" => 0, "msg" => $e->getMessage()];
         }
     }
+
+
+
+
+    public function snapshot($oss_input_object,$oss_output_object,$oss_bucket=null,$snapshot_config=[],$oss_location=null)
+    {
+        $this->request = new SubmitSnapshotJobRequest();
+        $this->request->setAcceptFormat('JSON');
+        $oss_location = $oss_location ?: $this->config['location'];
+        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
+
+        $input = array('Location' => $oss_location,
+            'Bucket' => $oss_bucket,
+            'Object' => urlencode($oss_input_object));
+        $this->request->setInput(json_encode($input));
+        //处理输出图片名
+        $temp=explode('.',$oss_output_object);
+        $this->filename=$temp[0];
+
+        $oss_output_object=$this->filename.'_{Count}.jpg';
+
+        $output = array('Location' => $oss_location,
+            'Bucket' => $oss_bucket,
+            'Object' => urlencode($oss_output_object));
+        $snapshot_config = array('OutputFile' => $output);
+
+        $this->snapshot_number=$snapshot_config['Num'];
+
+        $snapshot_config['Time'] = isset($snapshot_config['time'])?$snapshot_config['time']:$this->config["snapshot"]['time'];
+        $snapshot_config['Interval'] = isset($snapshot_config['interval'])?$snapshot_config['interval']:$this->config["snapshot"]['interval'];
+        $snapshot_config['Num'] = isset($snapshot_config['num'])?$snapshot_config['num']:$this->config["snapshot"]['num'];
+        $snapshot_config['Height'] = isset($snapshot_config['height'])?$snapshot_config['height']:$this->config["snapshot"]['height'];
+        $this->request->setSnapshotConfig(json_encode($snapshot_config));
+        $this->request->setPipelineId($this->config['pipeline_id']);
+
+        return $this;
+    }
+
+
+    public function getSnapshotResponse()
+    {
+        try {
+            $response = $this->client->getAcsResponse($this->request);
+            $file_list=[];
+            $i=1;
+            $temp_num = 100000;
+            while ($i<=$this->snapshot_number){
+                $file_list[]=$this->filename.'_'.substr(($temp_num+$i),1,5).'.jpg';
+                $i++;
+            }
+            $jobInfo = [
+                'jobId' =>  $response->{'SnapshotJob'}->{'Id'},
+                'file_list' =>$file_list,
+            ];
+            return ["state" => 1, "data" => $jobInfo];
+        } catch(ServerException $e) {
+            return ["state" => 0, "msg" => $e->getMessage()];
+        } catch(ClientException $e) {
+            return ["state" => 0, "msg" => $e->getMessage()];
+        }
+    }
+
 
 
     public function getJobStatus($job_id)
@@ -141,56 +204,6 @@ class Mts
         }
     }
 
-
-    public function snapshot($oss_input_object,$oss_output_object,$oss_bucket=null,$snapshot_config=[],$oss_location=null)
-    {
-        $this->request = new SubmitSnapshotJobRequest();
-        $this->request->setAcceptFormat('JSON');
-        $oss_location = $oss_location ?: $this->config['location'];
-        $oss_bucket = $oss_bucket ?: $this->config['bucket'];
-
-        $input = array('Location' => $oss_location,
-            'Bucket' => $oss_bucket,
-            'Object' => urlencode($oss_input_object));
-        $this->request->setInput(json_encode($input));
-        //处理输出图片名
-        $temp=explode('.',$oss_output_object);
-        $filename=$temp[0];
-
-        $oss_output_object=$filename.'_{Count}.jpg';
-
-        $output = array('Location' => $oss_location,
-            'Bucket' => $oss_bucket,
-            'Object' => urlencode($oss_output_object));
-        $snapshot_config = array('OutputFile' => $output);
-
-        $snapshot_config['Time'] = isset($snapshot_config['time'])?$snapshot_config['time']:$this->config["snapshot"]['time'];
-        $snapshot_config['Interval'] = isset($snapshot_config['interval'])?$snapshot_config['interval']:$this->config["snapshot"]['interval'];
-        $snapshot_config['Num'] = isset($snapshot_config['num'])?$snapshot_config['num']:$this->config["snapshot"]['num'];
-        $snapshot_config['Height'] = isset($snapshot_config['height'])?$snapshot_config['height']:$this->config["snapshot"]['height'];
-        $this->request->setSnapshotConfig(json_encode($snapshot_config));
-        $this->request->setPipelineId($this->config['pipeline_id']);
-        try {
-            $response = $this->client->getAcsResponse($this->request);
-             $file_list=[];
-             $i=1;
-             $temp_num = 100000;
-             while ($i<=$snapshot_config['Num']){
-                 $file_list[]=$filename.'_'.substr(($temp_num+$i),1,5).'.jpg';
-                 $i++;
-             }
-            $jobInfo = [
-                'jobId' =>  $response->{'SnapshotJob'}->{'Id'},
-                'file_list' =>$file_list,
-            ];
-            return ["state" => 1, "data" => $jobInfo];
-        } catch(ServerException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-        } catch(ClientException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-        }
-
-    }
 
 
 }
