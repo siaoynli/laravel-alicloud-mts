@@ -11,9 +11,16 @@ this package  for laravel
 ```
 composer require siaoynli/laravel-alicloud-mts
 ```
-add the   Siaoynli\AliCloud\Mts\LaravelAliMtsServerProvider::class   to the providers array in config/app.php
+add the   
+```
+Siaoynli\AliCloud\Mts\LaravelAliMtsServerProvider::class   
+```
+to the providers array in config/app.php
 
+```
 php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServerProvider"
+```
+
 
 ## alias
 
