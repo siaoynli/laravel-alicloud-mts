@@ -140,14 +140,13 @@ class Mts
             'Object' => urlencode($oss_output_object));
         $snapshot_config = array('OutputFile' => $output);
 
-        $this->snapshot_number=$snapshot_config['Num'];
 
         $snapshot_config['Time'] = isset($snapshot_config['time'])?$snapshot_config['time']:$this->config["snapshot"]['time'];
         $snapshot_config['Interval'] = isset($snapshot_config['interval'])?$snapshot_config['interval']:$this->config["snapshot"]['interval'];
-        $snapshot_config['Num'] = isset($snapshot_config['num'])?$snapshot_config['num']:$this->config["snapshot"]['num'];
+        $this->snapshot_number=$snapshot_config['Num'] = isset($snapshot_config['num'])?$snapshot_config['num']:$this->config["snapshot"]['num'];
         $snapshot_config['Height'] = isset($snapshot_config['height'])?$snapshot_config['height']:$this->config["snapshot"]['height'];
         $this->request->setSnapshotConfig(json_encode($snapshot_config));
-        $this->request->setPipelineId($this->config['pipeline_id']);
+        $this->request->setPipelineId($this->config['pipeline']);
 
         return $this;
     }
