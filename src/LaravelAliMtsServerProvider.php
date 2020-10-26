@@ -16,7 +16,7 @@ class LaravelAliMtsServerProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('mts', function ($app) {
-            return new Sms($app['config']);
+            return new Mts($app['config']);
         });
     }
 
