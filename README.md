@@ -39,12 +39,12 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
  //打图片水印
  
  $image_watermark = array(
-            "template_id"=>'45b67a2f23e04e345dfg11b3ed7a77f',
+            "template_id"=>'45b67a2f23e04e345dfg11b3ed7a77f', //水印模板
            'type' => 'Image',
             'pos' => 'TopRight',
-            'width' => 0.05,
-           'dx' => 0,
-            'dy'=> 0
+            'width' => 300, //水印宽度
+           'dx' => 10, //x间距
+            'dy'=> 10 //y间距
   );
  
   $response=Mts::input("11.mp4","hzwwp")->setImgWater("flu.png",$image_watermark,"hzwwp")->output("a.mp4","69645e9dda5341d9a3ec5a5d82f817cb","hzwwp")->getAcsResponse();
