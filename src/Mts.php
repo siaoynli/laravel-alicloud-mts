@@ -15,6 +15,7 @@ use AliCloud\Core\Exception\ServerException;
 use AliCloud\Core\Profile\DefaultProfile;
 use AliCloud\Core\DefaultAcsClient;
 use AliCloud\Mts\QueryJobListRequest;
+use AliCloud\Mts\QuerySnapshotJobListRequest;
 use AliCloud\Mts\SubmitJobsRequest;
 use AliCloud\Mts\SubmitSnapshotJobRequest;
 use Illuminate\Config\Repository;
@@ -177,7 +178,7 @@ class Mts
 
 
 
-    public function getJobStatus($job_id)
+    public function getAcsJobStatus($job_id)
     {
         $this->request = new QueryJobListRequest();
         $this->request->setAcceptFormat('JSON');
@@ -194,6 +195,30 @@ class Mts
                 $jobInfo['video_length'] = $response->{'JobList'}->{'Job'}[0]->{'Output'}->{'Properties'}->{'Duration'};
             }
             return ["state" => 1, "data" => $jobInfo];
+
+        } catch (ServerException $e) {
+            return ["state" => 0, "msg" => $e->getMessage()];
+
+        } catch (ClientException $e) {
+            return ["state" => 0, "msg" => $e->getMessage()];
+        }
+    }
+
+
+    public function getSnapshotJobStatus($job_id)
+    {
+        $this->request = new QuerySnapshotJobListRequest();
+        $this->request->setAcceptFormat('JSON');
+        $this->request->setSnapshotJobIds($job_id);
+        try {
+            $response = $this->client->getAcsResponse($this->request);
+
+            $jobInfo = $response->{'SnapshotJobList'}->{'SnapshotJob'}[0];
+
+            if ($jobInfo->{'State'} === 'Success') {
+                return ["state" => 1, "data" => ["State"=>"Success","Count"=>$jobInfo->{'Count'}]];
+            }
+            return ["state" => 0, "msg" => $jobInfo->{'Message'}];
 
         } catch (ServerException $e) {
             return ["state" => 0, "msg" => $e->getMessage()];

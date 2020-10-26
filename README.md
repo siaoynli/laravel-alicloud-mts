@@ -51,7 +51,7 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
   
   //获取转码状态
   $job_id="00ee7714d880493e868656af5f645e72";
-  $result=Mts::getJobStatus(job_id)
+  $result=Mts::getAcsJobStatus(job_id)
   
   //视频截图
   
@@ -69,7 +69,9 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
           4 => "aa_00005.jpg"
         ]
   ]
-  
+  //获取状态
+  $job_id="abf325e69053424eaa03c587d822b8d3"
+  $result=Mts::getSnapshotJobStatus(job_id)
 ```
 
 ## 说明

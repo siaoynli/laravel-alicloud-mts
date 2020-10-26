@@ -2,6 +2,7 @@
 
 namespace Siaoynli\AliCloud\Mts;
 
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelAliMtsServerProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class LaravelAliMtsServerProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('mts', function ($app) {
-            return new Mts($app['config']);
+            return new Sms($app['config']);
         });
     }
 
