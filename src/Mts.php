@@ -28,8 +28,8 @@ class Mts
     protected $client;
     protected $request;
     protected $output = array();
-    protected  $filename="";
-    protected  $snapshot_number=1;
+    protected $filename = "";
+    protected $snapshot_number = 1;
 
     public function __construct(Repository $config)
     {
@@ -117,9 +117,7 @@ class Mts
     }
 
 
-
-
-    public function snapshot($oss_input_object,$oss_output_object,$oss_bucket=null,$snapshot_config=[],$oss_location=null)
+    public function snapshot($oss_input_object, $oss_output_object, $oss_bucket = null, $snapshot_config = [], $oss_location = null)
     {
         $this->request = new SubmitSnapshotJobRequest();
         $this->request->setAcceptFormat('JSON');
@@ -131,10 +129,10 @@ class Mts
             'Object' => urlencode($oss_input_object));
         $this->request->setInput(json_encode($input));
         //处理输出图片名
-        $temp=explode('.',$oss_output_object);
-        $this->filename=$temp[0];
+        $temp = explode('.', $oss_output_object);
+        $this->filename = $temp[0];
 
-        $oss_output_object=$this->filename.'_{Count}.jpg';
+        $oss_output_object = $this->filename . '_{Count}.jpg';
 
         $output = array('Location' => $oss_location,
             'Bucket' => $oss_bucket,
@@ -142,10 +140,10 @@ class Mts
         $snapshot_config = array('OutputFile' => $output);
 
 
-        $snapshot_config['Time'] = isset($snapshot_config['time'])?$snapshot_config['time']:$this->config["snapshot"]['time'];
-        $snapshot_config['Interval'] = isset($snapshot_config['interval'])?$snapshot_config['interval']:$this->config["snapshot"]['interval'];
-        $this->snapshot_number=$snapshot_config['Num'] = isset($snapshot_config['num'])?$snapshot_config['num']:$this->config["snapshot"]['num'];
-        $snapshot_config['Height'] = isset($snapshot_config['height'])?$snapshot_config['height']:$this->config["snapshot"]['height'];
+        $snapshot_config['Time'] = isset($snapshot_config['time']) ? $snapshot_config['time'] : $this->config["snapshot"]['time'];
+        $snapshot_config['Interval'] = isset($snapshot_config['interval']) ? $snapshot_config['interval'] : $this->config["snapshot"]['interval'];
+        $this->snapshot_number = $snapshot_config['Num'] = isset($snapshot_config['num']) ? $snapshot_config['num'] : $this->config["snapshot"]['num'];
+        $snapshot_config['Height'] = isset($snapshot_config['height']) ? $snapshot_config['height'] : $this->config["snapshot"]['height'];
         $this->request->setSnapshotConfig(json_encode($snapshot_config));
         $this->request->setPipelineId($this->config['pipeline']);
 
@@ -157,25 +155,24 @@ class Mts
     {
         try {
             $response = $this->client->getAcsResponse($this->request);
-            $file_list=[];
-            $i=1;
+            $file_list = [];
+            $i = 1;
             $temp_num = 100000;
-            while ($i<=$this->snapshot_number){
-                $file_list[]=$this->filename.'_'.substr(($temp_num+$i),1,5).'.jpg';
+            while ($i <= $this->snapshot_number) {
+                $file_list[] = $this->filename . '_' . substr(($temp_num + $i), 1, 5) . '.jpg';
                 $i++;
             }
             $jobInfo = [
-                'jobId' =>  $response->{'SnapshotJob'}->{'Id'},
-                'file_list' =>$file_list,
+                'job_id' => $response->{'SnapshotJob'}->{'Id'},
+                'file_lists' => $file_list,
             ];
             return ["state" => 1, "data" => $jobInfo];
-        } catch(ServerException $e) {
+        } catch (ServerException $e) {
             return ["state" => 0, "msg" => $e->getMessage()];
-        } catch(ClientException $e) {
+        } catch (ClientException $e) {
             return ["state" => 0, "msg" => $e->getMessage()];
         }
     }
-
 
 
     public function getAcsJobStatus($job_id)
@@ -186,12 +183,12 @@ class Mts
         try {
             $response = $this->client->getAcsResponse($this->request);
             $jobInfo = [
-                'jobId' => $response->{'JobList'}->{'Job'}[0]->{'JobId'},
-                'status' => $response->{'JobList'}->{'Job'}[0]->{'State'},
+                'job_id' => $response->{'JobList'}->{'Job'}[0]->{'JobId'},
+                'state' => $response->{'JobList'}->{'Job'}[0]->{'State'},
                 'percent' => $response->{'JobList'}->{'Job'}[0]->{'Percent'},
             ];
 
-            if ($jobInfo['status'] === 'TranscodeSuccess') {
+            if ($jobInfo['state'] === 'TranscodeSuccess') {
                 $jobInfo['video_length'] = $response->{'JobList'}->{'Job'}[0]->{'Output'}->{'Properties'}->{'Duration'};
             }
             return ["state" => 1, "data" => $jobInfo];
@@ -216,7 +213,7 @@ class Mts
             $jobInfo = $response->{'SnapshotJobList'}->{'SnapshotJob'}[0];
 
             if ($jobInfo->{'State'} === 'Success') {
-                return ["state" => 1, "data" => ["State"=>"Success","Count"=>$jobInfo->{'Count'}]];
+                return ["state" => 1, "data" => ["State" => "Success", "Count" => $jobInfo->{'Count'}]];
             }
             return ["state" => 0, "msg" => $jobInfo->{'Message'}];
 
@@ -227,7 +224,6 @@ class Mts
             return ["state" => 0, "msg" => $e->getMessage()];
         }
     }
-
 
 
 }

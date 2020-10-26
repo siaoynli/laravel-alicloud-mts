@@ -53,6 +53,18 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
   $job_id="00ee7714d880493e868656af5f645e72";
   $result=Mts::getAcsJobStatus(job_id)
   
+    输出
+
+array:2 [▼
+  "state" => 1
+  "data" => array:4 [▼
+    "job_id" => "81146b108f1e43149f6c743bf270e527"
+    "state" => "TranscodeSuccess"
+    "percent" => 100
+    "video_length" => "228"
+  ]
+]
+  
   //视频截图
   
    $response=Mts::snapshot("11.mp4","aa.jpg","hzwwp")->getSnapshotResponse();
@@ -60,8 +72,8 @@ php artisan vendor:publish --provider="Siaoynli\AliCloud\Mts\LaravelAliMtsServer
    //输出
    "state" => 1
       "data" => array:2 [▼
-        "jobId" => "abf325e69053424eaa03c587d822b8d3"
-        "file_list" => array:5 [▼
+        "job_id" => "abf325e69053424eaa03c587d822b8d3"
+        "file_lists" => array:5 [▼
           0 => "aa_00001.jpg"
           1 => "aa_00002.jpg"
           2 => "aa_00003.jpg"
