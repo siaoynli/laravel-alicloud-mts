@@ -217,11 +217,10 @@ class Mts
             }
             return ["state" => 0, "msg" => $jobInfo->{'Message'}];
 
+        }catch (ClientException $e) {
+            throw  new \Exception("ClientException :" . $e->getErrorMessage());
         } catch (ServerException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-
-        } catch (ClientException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
+            throw  new \Exception("ServerException :" . $e->getErrorMessage());
         }
     }
 
