@@ -2,7 +2,7 @@
 
 namespace Siaoynli\AliCloud\Mts;
 
-use AliCloud\Core\Exception\ServerException;
+
 use AliCloud\Core\Profile\DefaultProfile;
 use AliCloud\Core\DefaultAcsClient;
 use AliCloud\Mts\QueryJobListRequest;
