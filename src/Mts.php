@@ -1,16 +1,7 @@
 <?php
 
 namespace Siaoynli\AliCloud\Mts;
-/*
-* @Author: hzwlxy
-* @Email: 120235331@qq.com
-* @Github: http：//www.github.com/siaoynli
-* @Date: 2019/8/20 14:03
-* @Version:
-* @Description:
-*/
 
-use AliCloud\Core\Exception\ClientException;
 use AliCloud\Core\Exception\ServerException;
 use AliCloud\Core\Profile\DefaultProfile;
 use AliCloud\Core\DefaultAcsClient;
@@ -106,13 +97,15 @@ class Mts
     {
         try {
             $response = $this->client->getAcsResponse($this->request);
-            $data["job_id"] = $response->{'JobResultList'}->{'JobResult'}[0]->{'Job'}->{'JobId'};
-            $data["state"] = $response->{'JobResultList'}->{'JobResult'}[0]->{'Job'}->{'State'};
-            return ["state" => 1, "data" => $data];
-        } catch (ServerException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-        } catch (ClientException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
+            if ($response->{'JobResultList'}->{'JobResult'}[0]->{'Success'}) {
+                $data["job_id"] = $response->{'JobResultList'}->{'JobResult'}[0]->{'Job'}->{'JobId'};
+                $data["state"] = $response->{'JobResultList'}->{'JobResult'}[0]->{'Job'}->{'State'};
+                return ["state" => 1, "data" => $data];
+            } else {
+                return ["state" => 0, "message" => $response->{'JobResultList'}->{'JobResult'}[0]->{'Message'}];
+            }
+        } catch (\Exception $e) {
+            throw  new \Exception("Exception :" . $e->getMessage());
         }
     }
 
@@ -167,10 +160,8 @@ class Mts
                 'file_lists' => $file_list,
             ];
             return ["state" => 1, "data" => $jobInfo];
-        } catch (ServerException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-        } catch (ClientException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
+        } catch (\Exception $e) {
+            throw  new \Exception("Exception :" . $e->getMessage());
         }
     }
 
@@ -193,11 +184,8 @@ class Mts
             }
             return ["state" => 1, "data" => $jobInfo];
 
-        } catch (ServerException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
-
-        } catch (ClientException $e) {
-            return ["state" => 0, "msg" => $e->getMessage()];
+        } catch (\Exception $e) {
+            throw  new \Exception("Exception :" . $e->getMessage());
         }
     }
 
@@ -217,12 +205,9 @@ class Mts
             }
             return ["state" => 0, "msg" => $jobInfo->{'Message'}];
 
-        }catch (ClientException $e) {
-            throw  new \Exception("ClientException :" . $e->getErrorMessage());
-        } catch (ServerException $e) {
-            throw  new \Exception("ServerException :" . $e->getErrorMessage());
+        } catch (\Exception $e) {
+            throw  new \Exception("Exception :" . $e->getMessage());
         }
     }
-
 
 }
